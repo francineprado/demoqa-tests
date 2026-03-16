@@ -1,0 +1,17 @@
+[
+  {
+    "description": "usuário errado, senha certa",
+    "username": "usuarioErrado",
+    "password": "Teste@123"
+  },
+  {
+    "description": "usuário certo, senha errada",
+    "username": "silvaJoao",
+    "password": "senhaErrada"
+  },
+  {
+    "description": "campos vazios",
+    "username": "",
+    "password": ""
+  }
+]
