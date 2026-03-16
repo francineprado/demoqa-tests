@@ -1,13 +1,12 @@
 const { defineConfig } = require('@playwright/test');
 
 module.exports = defineConfig({
-  // Pasta onde ficam os testes
   testDir: './tests',
 
   // Tempo máximo por teste
   timeout: 30000,
 
-  // Configurações globais
+  // Configs globais
   use: {
     baseURL: 'https://demoqa.com',
     headless: false,
@@ -16,7 +15,6 @@ module.exports = defineConfig({
     },
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
-    // Viewport (tamanho da "janela" do navegador)
     viewport: { width: 1280, height: 720 },
   },
 

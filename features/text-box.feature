@@ -1,4 +1,3 @@
-```gherkin
 Funcionalidade: Text Box - Formulário de dados pessoais
   Como usuário do DemoQA
   Quero preencher o formulário de Text Box

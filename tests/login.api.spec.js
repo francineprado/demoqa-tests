@@ -6,9 +6,6 @@ test.describe('API - Login Book Store', () => {
 
   const BASE_URL = 'https://demoqa.com';
 
-  // ════════════════════════════════════════
-  // ✅ CENÁRIO POSITIVO — Login válido
-  // ════════════════════════════════════════
   test('API - Login com credenciais válidas',
     { tag: ['@smoke', '@positive', '@api'] },
     async ({ request }) => {
@@ -31,9 +28,6 @@ test.describe('API - Login Book Store', () => {
     expect(body.username).toBeTruthy();
   });
 
-  // ════════════════════════════════════════
-  // ❌ CENÁRIO NEGATIVO — Usuário errado
-  // ════════════════════════════════════════
   test('API - Login com usuário inválido',
     { tag: ['@regression', '@negative', '@api'] },
     async ({ request }) => {
@@ -44,22 +38,14 @@ test.describe('API - Login Book Store', () => {
         password: validData[0].password
       }
     });
-
-    // Lê como texto primeiro (pode vir vazio!)
+    
     const text = await response.text();
     console.log('❌ Resposta usuário inválido:', text || '(vazio)');
 
-    // CRITÉRIO: Body vazio = login falhou = CORRETO!
-    // O servidor não retornou token nem dados = não autorizou
     expect(text).toBeFalsy();
-    // ↑ "Eu espero que o body esteja VAZIO"
-    //    Vazio = o servidor não reconheceu o usuário
-    //    Se viesse com token, seria um BUG! 🐛
+    // Espera um body vazio
   });
 
-  // ════════════════════════════════════════
-  // ❌ CENÁRIO NEGATIVO — Senha errada
-  // ════════════════════════════════════════
   test('API - Login com senha inválida',
     { tag: ['@regression', '@negative', '@api'] },
     async ({ request }) => {
@@ -74,13 +60,9 @@ test.describe('API - Login Book Store', () => {
     const text = await response.text();
     console.log('❌ Resposta senha inválida:', text || '(vazio)');
 
-    // CRITÉRIO: Body vazio = login falhou = CORRETO!
     expect(text).toBeFalsy();
   });
 
-  // ════════════════════════════════════════
-  // ❌ CENÁRIO NEGATIVO — Campos vazios
-  // ════════════════════════════════════════
   test('API - Login com campos vazios',
     { tag: ['@regression', '@negative', '@api'] },
     async ({ request }) => {
@@ -95,14 +77,9 @@ test.describe('API - Login Book Store', () => {
     const text = await response.text();
     console.log('❌ Resposta campos vazios:', text || '(vazio)');
 
-    // CRITÉRIO: Não pode ter token!
-    // Se veio algo, verifica que NÃO tem token
     if (text) {
       const body = JSON.parse(text);
-      // Se por algum motivo veio um body, não pode ter token!
-      expect(body.token || null).toBeNull();
+      expect(body.token || null).toBeNull(); // Espera um body vazio ou ausência de token
     }
-
-    // Body vazio OU sem token = login não aconteceu = CORRETO!
   });
 });

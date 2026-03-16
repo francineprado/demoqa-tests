@@ -2,71 +2,73 @@ class LoginPage {
   constructor(page) {
     this.page = page;
 
-    // ═══════════════════════════════════════
-    // 🎯 LOCATORS — os "endereços" dos elementos na tela
-    //    Esses IDs são do site demoqa.com/login
-    // ═══════════════════════════════════════
-
-    // Campos de entrada
     this.usernameInput = page.locator('#userName');
     this.passwordInput = page.locator('#password');
     this.loginButton   = page.locator('#login');
 
-    // Mensagem de erro (aparece quando login falha)
     this.errorMessage  = page.locator('#name');
-
-    // Elemento que confirma o login (página de perfil)
     this.usernameLabel = page.locator('#userName-value');
-    this.logoutButton  = page.locator('#submit');
   }
 
-  // ═══════════════════════════════════════
-  // 🚀 MÉTODOS — o que o robô sabe fazer
-  // ═══════════════════════════════════════
-
-  // Navegar até a página de login
+  // Navega até a página e remove anúncios
   async goto() {
     await this.page.goto('/login');
+    await this.removeAds();
   }
 
-  // Preencher usuário e senha e clicar em Login
+  // Remove anúncios que atrapalham os cliques
+  async removeAds() {
+    await this.page.evaluate(() => {
+      const ads = document.querySelectorAll('iframe, .ad, #fixedban, #adplus-anchor');
+      ads.forEach(ad => ad.remove());
+    });
+    await this.page.evaluate(() => window.scrollTo(0, 0));
+  }
+
+  // Login válido
   async login(username, password) {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
-    await this.loginButton.click();
+    await Promise.all([
+      this.page.waitForURL('**/profile**', { timeout: 15000 }),
+      this.loginButton.click()
+    ]);
   }
 
-  // Clicar em Login SEM preencher nada (pra testar campos vazios)
+  // Login inválido
+  async loginExpectingError(username, password) {
+    await this.usernameInput.fill(username);
+    await this.passwordInput.fill(password);
+    await this.loginButton.click({ force: true });
+  }
+
+  // Campos vazios
   async clickLoginWithoutFilling() {
-    await this.loginButton.click();
+    await this.loginButton.click({ force: true });
   }
 
-  // Pegar o texto da mensagem de erro
-  async getErrorMessage() {
-    // Espera a mensagem aparecer (pode demorar um pouco)
-    await this.errorMessage.waitFor({ state: 'visible' });
-    return await this.errorMessage.innerText();
-  }
-
-  // Verificar se estou na página de perfil (login deu certo)
   async isLoggedIn() {
-    // Se o label com o nome do usuário está visível = logou!
-    return await this.usernameLabel.isVisible();
+    try {
+      await this.usernameLabel.waitFor({ state: 'visible', timeout: 10000 });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
-  // Pegar o nome do usuário logado
   async getLoggedUsername() {
     return await this.usernameLabel.innerText();
   }
 
-  // Verificar se campos obrigatórios estão destacados
+  async getErrorMessage() {
+    await this.errorMessage.waitFor({ state: 'visible' });
+    return await this.errorMessage.innerText();
+  }
+
   async areFieldsHighlighted() {
-    // Quando submete vazio, o DemoQA adiciona borda vermelha
-    // A classe "is-invalid" aparece nos campos
     const usernameClass = await this.usernameInput.getAttribute('class');
     const passwordClass = await this.passwordInput.getAttribute('class');
-
-    return usernameClass.includes('is-invalid') 
+    return usernameClass.includes('is-invalid')
         || passwordClass.includes('is-invalid');
   }
 }

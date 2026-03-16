@@ -1,4 +1,3 @@
-```gherkin
 Funcionalidade: API de Login da Book Store
   Como QA
   Quero testar a API de login diretamente

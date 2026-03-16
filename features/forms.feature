@@ -1,4 +1,3 @@
-```gherkin
 Funcionalidade: Practice Form - Formulário de registro de estudante
   Como usuário do DemoQA
   Quero preencher o formulário de registro completo
