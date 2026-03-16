@@ -1,0 +1,22 @@
+{
+  "name": "demoqa-tests",
+  "version": "1.0.0",
+  "description": "Testes automatizados E2E para DemoQA",
+"scripts": {
+  "test": "npx playwright test",
+  "test:ui": "npx playwright test --ui",
+  "test:slow": "npx playwright test --workers=1",
+
+  "test:api": "npx playwright test login.api.spec.js --workers=1",
+  "test:api:valido": "npx playwright test --grep \"API - Login com credenciais\" --workers=1",
+  "test:api:invalido": "npx playwright test --grep \"API - Login com usuário\" --workers=1",
+
+  "test:smoke": "npx playwright test --grep @smoke --workers=1",
+  "test:negative": "npx playwright test --grep @negative --workers=1",
+
+  "report": "npx playwright show-report"
+},
+  "devDependencies": {
+    "@playwright/test": "^1.44.1"
+  }
+}
